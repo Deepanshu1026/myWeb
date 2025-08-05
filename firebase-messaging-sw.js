@@ -1,7 +1,7 @@
-// firebase-messaging-sw.js
-importScripts('https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/12.0.0/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.0.0/firebase-messaging-compat.js');
 
+// Initialize Firebase app in Service Worker using compat version
 firebase.initializeApp({
   apiKey: "AIzaSyAU7ldBTC2wAS6zdp8K7LkUnk0ghEsHePs",
   authDomain: "auth-5ccab.firebaseapp.com",
@@ -12,11 +12,16 @@ firebase.initializeApp({
   measurementId: "G-5MMRNGFJFY"
 });
 
+// Retrieve firebase messaging
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function(payload) {
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: '/firebase-logo.png' // Optional: replace with your icon
-  });
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  const notificationTitle = payload.notification?.title || "Background Message";
+  const notificationOptions = {
+    body: payload.notification?.body || "",
+    icon: '/firebase-logo.png' // or any static image your site can serve
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
